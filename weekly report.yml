@@ -1,0 +1,26 @@
+name: Weekly Report
+
+on:
+  schedule:
+    # 每周五的00:00 UTC自动运行
+    - cron: '0 0 * * 5'
+
+jobs:
+  create-weekly-report:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Create Weekly Report
+        run: |
+          DATE=$(date +'%Y-%m-%d')
+          echo "# 周报 - $DATE" > "$DATE-周报.md"
+          echo "## 本周完成的任务" >> "$DATE-周报.md"
+          echo "" >> "$DATE-周报.md"
+          echo "## 下周计划的任务" >> "$DATE-周报.md"
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add "$DATE-周报.md"
+          git commit -m "创建 $DATE 的周报"
+          git push
